@@ -1,7 +1,7 @@
 #Test database#
-select *
-from [School_Shooting Project]..['School Shooting$']
-order by 4,6,7
+SELECT *
+FROM [School_Shooting Project]..['School Shooting$']
+ORDER BY 4,6,7
 
 #Updating table to null zero value to avoid errors 
 encountered when dividing by zero#
@@ -18,8 +18,6 @@ SET Casualties=NULL WHERE Casualties=0
 UPDATE [School_Shooting Project]..['School Shooting$']
 SET Total_Shootings=NULL WHERE Total_Shootings=0 
 
-
-
 #Perfoming simple data mining to extract useful information
 for project#
 
@@ -27,128 +25,120 @@ for project#
 This is to ascertain total shootings that occur in each
 type of shooting and impact#
 
-select distinct Shooting_Type,sum(Total_Shootings) as TotalShootings, sum(Killed) as TotalKilled, 
-sum(Injured) as TotalInjured, sum(Casualties)as TotalCasualties
-from [School_Shooting Project]..['School Shooting$']
-Group by Shooting_Type
+SELECT DISTINCT Shooting_Type, SUM(Total_Shootings) AS TotalShootings, SUM(Killed) AS TotalKilled, 
+SUM(Injured) AS TotalInjured, SUM(Casualties) AS TotalCasualties
+FROM [School_Shooting Project]..['School Shooting$']
+GROUP BY Shooting_Type
 
 
 #2. Ascertaining Number of shooting by type of school#
 #This ascertain the likelihood of being shot in a particular type of school#
 
-select distinct school_type, sum (Total_Shootings) as TotalShooting
-from [School_Shooting Project]..['School Shooting$']
-group by School_Type
-
+SELECT DISTINCT School_Type, SUM(Total_Shootings) AS TotalShooting
+FROM [School_Shooting Project]..['School Shooting$']
+GROUP BY School_Type
 
 #3.Find the Total shooting recorded for each state#
 #This gives an overview of shootings recorded in various state#
 
-select State, year(date) as year, School_Type,Total_Shootings,Killed, Injured, Casualties
-from [School_Shooting Project]..['School Shooting$']
-
+SELECT State, Year(Date) AS Year, School_Type,Total_Shootings,Killed, Injured, Casualties
+FROM [School_Shooting Project]..['School Shooting$']
 
 #4.To find out if race has influence on these shootings'
 
-select year(date) as year, state, white, black, asian, american_indian_alaska_native
-hispanic
-from [School_Shooting Project]..['School Shooting$']
-order by year,state
+SELECT Year(Date) AS Year, State, White, Black, Asian, American_Indian_Alaska_Native_Hispanic
+FROM [School_Shooting Project]..['School Shooting$']
+ORDER BY Year,State
 
 #5. Percentage of death per shooting in each state#
 
-select state, total_shootings, killed, (killed/total_shootings)*100 as 
-percentage_killed_per_shooting
-from [School_Shooting Project]..['School Shooting$']
-
+SELECT State, Total_Shootings, Killed, (Killed/Total_Shootings)*100 AS 
+Percentage_Killed_Per_Shooting
+FROM [School_Shooting Project]..['School Shooting$']
 
 #6.Average shooting recorded in a year for each state#
 #This is to ascertain if shooting occurences are declining or increasing#
 
-select state, year(date) as year, avg(total_shootings) as AverageShooting
-from [School_Shooting Project]..['School Shooting$']
-group by state, date
-
-
+SELECT State, Year(Date) AS Year, AVG(Total_Shootings) AS AverageShooting
+FROM [School_Shooting Project]..['School Shooting$']
+GROUP BY State, Date
 
 #7. Looking at state with highest shooting recorded#
 
-select State, MAX(total_shootings) as HighestShooting,
-MAX(killed), MAX((killed/total_shootings))*100 as percentAgekilledpershooting
-from [School_Shooting Project]..['School Shooting$']
-Group by state
+Select State, MAX(total_shootings) AS HighestShooting,
+MAX(killed), MAX((killed/total_shootings))*100 AS PercentageKilledPerShooting
+FROM [School_Shooting Project]..['School Shooting$']
+GROUP BY State
  
-
  #8.Average shooting recorded in a year for each city#
-#This is to ascertain if shooting occurences are declining or increasing#
+#This is to ascertain if shooting occurences are declining or increasing in cities-granuilarity level#
 
-select city, year(date) as year, avg(total_shootings) as AverageShooting
-from [School_Shooting Project]..['School Shooting$']
-group by city, date
+SELECT City, Year(Date) AS Year, AVG(Total_Shootings) AS AverageShooting
+FROM [School_Shooting Project]..['School Shooting$']
+GROUP City, Date
 
 #9. Looking at city with highest shooting recorded#
 
-select city, MAX(total_shootings) as HighestShooting,
-MAX(killed) as personskilled, MAX((killed/total_shootings))*100 as percentAgekilledpershooting
-from [School_Shooting Project]..['School Shooting$']
-Group by city
-order by city, highestshooting 
+SELECT City, MAX(total_shootings) AS HighestShooting,
+MAX(killed) AS PersonsKilled, MAX((killed/Total_shootings))*100 AS PercentageKilledPerShooting
+FROM [School_Shooting Project]..['School Shooting$']
+GROUP BY City
+ORDER BY City, HighestShooting 
 
 #Creating views from queries to store data for visualization in tableau#
 1.
-Create view Shooting_Type_Impact AS
-select distinct Shooting_Type,sum(Total_Shootings) as TotalShootings, sum(Killed) as TotalKilled, 
-sum(Injured) as TotalInjured, sum(Casualties)as TotalCasualties
-from [School_Shooting Project]..['School Shooting$']
-Group by Shooting_Type
+CREATE VIEW Shooting_Type_Impact AS
+SELECT DISTINCT Shooting_Type, SUM(Total_Shootings) AS TotalShootings, SUM(Killed) AS TotalKilled, 
+SUM(Injured) AS TotalInjured, SUM(Casualties) AS TotalCasualties
+FROM [School_Shooting Project]..['School Shooting$']
+GROUP BY Shooting_Type
 
 2.
-Create view ShootingBySchoolType AS
-select distinct school_type, sum (Total_Shootings) as TotalShooting
-from [School_Shooting Project]..['School Shooting$']
-group by School_Type
+CREATE VIEW ShootingBySchoolType AS
+SELECT DISTINCT School_Type, SUM(Total_Shootings) AS TotalShooting
+FROM [School_Shooting Project]..['School Shooting$']
+GROUP BY School_Type
 
 3.
-Create view TotalShootingByState AS
-select State, year(date) as year, School_Type,Total_Shootings,Killed, Injured, Casualties
-from [School_Shooting Project]..['School Shooting$']
+CREATE VIEW TotalShootingByState AS
+SELECT State, Year(Date) AS Year, School_Type,Total_Shootings,Killed, Injured, Casualties
+FROM [School_Shooting Project]..['School Shooting$']
 
 4.
-Create view RaceInfluence AS
-select year(date) as year, state, white, black, asian, american_indian_alaska_native
-hispanic
-from [School_Shooting Project]..['School Shooting$']
---order by year,state
+CREATE VIEW RaceInfluence AS
+SELECT Year(Date) AS Year, State, White, Black, Asian, American_Indian_Alaska_Native_Hispanic
+FROM [School_Shooting Project]..['School Shooting$']
+--ORDER BY year,state
 
 5.
-Create view PercentageDeathPerShooting_State AS
-select state, total_shootings, killed, (killed/total_shootings)*100 as 
-percentage_killed_per_shooting
-from [School_Shooting Project]..['School Shooting$']
+CREATE VIEW PercentageDeathPerShooting_State AS
+SELECT State, Total_Shootings, Killed, (Killed/Total_Shootings)*100 AS 
+Percentage_Killed_Per_Shooting
+FROM [School_Shooting Project]..['School Shooting$']
 
 6.
-Create view AvgShootingPerYearByState AS
-select state, year(date) as year, avg(total_shootings) as AverageShooting
-from [School_Shooting Project]..['School Shooting$']
-group by state, date
+CREATE VIEW AvgShootingPerYearByState AS
+SELECT State, Year(Date) AS Year, AVG(Total_Shootings) AS AverageShooting
+FROM [School_Shooting Project]..['School Shooting$']
+GROUP BY State, Date
 
 7.
-Create view HighestShootingByState AS
-select State, MAX(total_shootings) as HighestShooting,
-MAX(killed) as maxkilled, MAX((killed/total_shootings))*100 as percentAgekilledpershooting
-from [School_Shooting Project]..['School Shooting$']
-Group by state
+CREATE VIEW HighestShootingByState AS
+SELECT State, MAX(total_shootings) AS HighestShooting,
+MAX(killed) AS MAXKilled, MAX((Killed/Total_Shootings))*100 AS PercentageKilledPerShooting
+FROM [School_Shooting Project]..['School Shooting$']
+GROUP BY State
 
 8.
-Create view AvgShootingPerYearByCity AS
-select city, year(date) as year, avg(total_shootings) as AverageShooting
-from [School_Shooting Project]..['School Shooting$']
-group by city, date
+CREATE VIEW AvgShootingPerYearByCity AS
+SELECT City, Year(Date) AS Year, AVG(Total_Shootings) AS AverageShooting
+FROM [School_Shooting Project]..['School Shooting$']
+GROUP BY City, Date
 
 9.
-Create view HighestShootingByCity AS 
-select city, MAX(total_shootings) as HighestShooting,
-MAX(killed) as personskilled, MAX((killed/total_shootings))*100 as percentAgekilledpershooting
-from [School_Shooting Project]..['School Shooting$']
-Group by city
---order by city, highestshooting 
+CREATE VIEW HighestShootingByCity AS 
+SELECT City, MAX(Total_Shootings) AS HighestShooting,
+MAX(Killed) AS PersonsKilled, MAX((Killed/Total_Shootings))*100 AS PercentageKilledPerShooting
+FROM [School_Shooting Project]..['School Shooting$']
+GROUP BY City
+--ORDER BY HighestShooting 
